@@ -822,12 +822,10 @@ function prepareAllSendDataForGoogleAiStudio() {
 	buildChatHistory(collection, remainingTokensQuantity);
 	messagesForApi = [];
 	for (let structure of chatMessages) {
-		const message = {
-			parts: [
-				{ text: structure.content },
-				{ text: extractMetadata(structure) }
-			]
-		};
+		const message = { parts: [{ text: structure.content }] };
+		if (settings.usedApi.provideMetadata === true) {
+			message.parts.push({ text: extractMetadata(structure) });
+		}
 		if (structure.role === 'assistant') {
 			message.role = 'model';
 		} else if (structure.role === 'system') {
@@ -915,10 +913,11 @@ function prepareAllSendDataForOpenRouter() {
 	buildChatHistory(collection, remainingTokensQuantity);
 	messagesForApi = [];
 	for (let structure of chatMessages) {
-		messagesForApi.push({
-			role: structure.role,
-			content: `${structure.content}\n\n${extractMetadata(structure)}`
-		});
+		const message = { role: structure.role, content: structure.content };
+		if (settings.usedApi.provideMetadata === true) {
+			message.content += `\n\n${extractMetadata(structure)}`;
+		}
+		messagesForApi.push(message);
 	}
 	messagesForApi = messagesForApi.concat(systemMessages);
 }
