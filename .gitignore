@@ -1,0 +1,5 @@
+api_keys/
+node_modules/
+configuration.json
+history.json
+log.txt

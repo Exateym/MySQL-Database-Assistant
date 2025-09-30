@@ -1,0 +1,311 @@
+/* Общие стили для тёмной темы */
+:root {
+	/* Основные цвета */
+	--background-dark: #1a1a1a;
+	--section-background-dark: #222222;
+	--text-light: #ffffff;
+	--text-muted: #cccccc;
+	--border-color: #444444;
+
+	/* Цвета индикаторов */
+	--indicator-red: #dc3545;   /* Красный */
+	--indicator-yellow: #ffc107; /* Жёлтый */
+	--indicator-green: #28a745;  /* Зелёный */
+
+	/* Цвета ролей сообщений (более тёмные) */
+	--role-system-dark: #400040; /* Пурпурный */
+	--role-assistant-dark: #004040; /* Бирюзовый */
+	--role-user-dark: #000033; /* Синий */
+
+	/* Цвет кнопки удаления (шапки) */
+	--delete-button-header-bg: #8B8000; /* Тёмно-жёлтый */
+	--delete-button-bg: #dc3545; /* Красный */
+	--delete-button-hover-bg: #c82333;
+}
+
+/* Сброс стилей и базовые настройки */
+*, *::before, *::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: var(--background-dark);
+	color: var(--text-light);
+	line-height: 1.6;
+	font-size: 0.9em; /* Мелкий шрифт */
+	text-align: left; /* Выравнивание по левому краю */
+	min-height: 100vh; /* Минимальная высота для всего экрана */
+	display: flex; /* Для размещения футера внизу */
+	flex-direction: column; /* Элементы будут располагаться по вертикали */
+}
+
+/* Контейнер для основного содержимого */
+.container {
+	width: 100%; /* Растягивается на всю ширину */
+	padding: 20px;
+	flex-grow: 1; /* Занимает всё доступное пространство, толкая футер вниз */
+}
+
+/* Заголовки */
+h1 {
+	text-align: center;
+	color: var(--text-light);
+	margin-bottom: 30px;
+	font-size: 2.5em;
+}
+
+h2 {
+	color: var(--text-light);
+	margin-top: 25px;
+	margin-bottom: 15px;
+	font-size: 1.6em;
+}
+
+h3 {
+	color: var(--text-muted);
+	margin-bottom: 8px;
+	font-size: 1.1em;
+}
+
+/* Секции */
+.section {
+	background-color: var(--section-background-dark);
+	padding: 20px;
+	border-radius: 8px;
+	margin-bottom: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Группы ввода */
+.input-group {
+	margin-bottom: 20px;
+}
+
+input[type="password"],
+textarea {
+	width: 100%;
+	padding: 10px 12px;
+	background-color: #333333;
+	color: var(--text-light);
+	border: 1px solid var(--border-color);
+	border-radius: 5px;
+	font-size: 1em;
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="password"]:focus,
+textarea:focus {
+	border-color: #007bff;
+	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+textarea {
+	resize: vertical; /* Позволяет изменять высоту по вертикали */
+	min-height: 80px;
+}
+
+/* Индикаторы текста (для ввода и ответа сервера) */
+.indicator-text {
+	display: block;
+	margin-top: 5px;
+	font-size: 0.8em;
+}
+
+.text-red {
+	color: var(--indicator-red);
+}
+
+.text-yellow {
+	color: var(--indicator-yellow);
+}
+
+.text-green {
+	color: var(--indicator-green);
+}
+
+/* Группа кнопок */
+.button-group {
+	display: flex;
+	gap: 10px; /* Отступы между кнопками */
+	flex-wrap: wrap; /* Кнопки будут переноситься на новую строку при нехватке места */
+	justify-content: flex-end; /* Выравнивание кнопок по правому краю */
+	margin-top: 20px;
+}
+
+button {
+	padding: 10px 20px;
+	background-color: #007bff;
+	color: var(--text-light);
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 1em;
+	transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover {
+	background-color: #0056b3;
+	transform: translateY(-1px);
+}
+
+button:active {
+	background-color: #004085;
+	transform: translateY(0);
+}
+
+/* История чата */
+.chat-history {
+	background-color: var(--section-background-dark);
+	padding: 15px;
+	border-radius: 8px;
+	/* Высота страницы будет расти, прокрутка не нужна для этого блока */
+}
+
+.chat-history p:first-child {
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+/* Блок сообщения */
+.message-block {
+	display: flex;
+	flex-direction: column; /* Элементы внутри будут располагаться вертикально (шапка, потом контент) */
+	margin-bottom: 15px;
+	border-radius: 8px;
+	overflow: hidden; /* Важно, чтобы внутренние элементы не выходили за границы скругления */
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	word-wrap: break-word; /* Перенос длинных слов */
+	overflow-wrap: break-word; /* Перенос длинных слов */
+}
+
+/* Стилизация блока сообщения в зависимости от роли */
+.message-block.role-system {
+	background-color: var(--role-system-dark);
+}
+
+.message-block.role-assistant {
+	background-color: var(--role-assistant-dark);
+}
+
+.message-block.role-user {
+	background-color: var(--role-user-dark);
+}
+
+/* Контейнер для кнопки удаления (шапка сообщения) */
+.container-for-delete-button {
+	width: 100%;
+	background-color: var(--delete-button-header-bg);
+	padding: 5px 10px;
+	display: flex;
+	justify-content: flex-end; /* Выравнивание кнопки удаления по правому краю */
+	align-items: center;
+}
+
+.delete-button {
+	background-color: var(--delete-button-bg);
+	color: var(--text-light);
+	border: none;
+	padding: 3px 8px;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 0.75em;
+	transition: background-color 0.2s ease;
+}
+
+.delete-button:hover {
+	background-color: var(--delete-button-hover-bg);
+}
+
+/* Контейнер для содержимого сообщения */
+.container-for-content {
+	width: 100%;
+	padding: 10px;
+	background-color: transparent; /* Фон наследуется от .message-block */
+	/* Здесь можно добавить внутренние отступы, если нужно отделить контент от краев блока */
+}
+
+.metadata-header {
+	font-size: 0.75em; /* Очень мелкий шрифт для метаданных */
+	color: var(--text-muted);
+	margin-bottom: 5px;
+}
+
+.content-paragraph {
+	font-size: 0.9em; /* Мелкий шрифт для содержимого */
+	color: var(--text-light);
+	white-space: pre-wrap; /* Сохраняет переносы строк и пробелы */
+}
+
+/* Футер */
+footer {
+	text-align: center;
+	color: var(--text-muted);
+	font-size: 0.8em;
+	margin-top: 30px;
+	padding: 15px;
+	border-top: 1px solid var(--border-color);
+}
+
+footer a {
+	color: #007bff;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+footer a:hover {
+	color: #66b3ff;
+	text-decoration: underline;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+	body {
+		font-size: 0.85em; /* Чуть меньший шрифт для мобильных */
+	}
+
+	.container {
+		padding: 10px; /* Уменьшаем отступы по краям */
+	}
+
+	h1 {
+		font-size: 2em;
+		margin-bottom: 20px;
+	}
+
+	h2 {
+		font-size: 1.4em;
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+
+	h3 {
+		font-size: 1em;
+	}
+
+	.section {
+		padding: 15px;
+		margin-bottom: 15px;
+	}
+
+	.button-group {
+		flex-direction: column; /* Кнопки будут располагаться вертикально */
+		align-items: stretch; /* Растягиваем кнопки на всю ширину */
+	}
+
+	.button-group button {
+		width: 100%; /* Каждая кнопка занимает всю доступную ширину */
+		margin-bottom: 10px; /* Отступ между вертикальными кнопками */
+	}
+
+	.button-group button:last-child {
+		margin-bottom: 0;
+	}
+
+	.message-block {
+		margin-bottom: 10px;
+	}
+}

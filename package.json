@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "crypto": "^1.0.1",
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "gpt-tokenizer": "^3.0.1",
+    "mysql2": "^3.14.3",
+    "path": "^0.12.7",
+    "readline-sync": "^1.4.10"
+  }
+}
