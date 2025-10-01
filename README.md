@@ -34,7 +34,7 @@
 		"name": "",
 		"model": "",
 		"tokensLimit": 0,
-		"provideMetadata": true
+		"provideMetadata": false
 	},
 	"mysqlServer": {
 		"host": "localhost",
