@@ -636,12 +636,14 @@ function generateStructureIdentifier(collection) {
 	return maximumValue + 1;
 }
 
-const metadataOriginPrefix = '(Метаданные были дописаны системой)';
+const metadataOriginPrefix = '(Системные метаданные)';
 
 function pushIntoHistory(role, content) {
-	const insertionIndex = content.indexOf(metadataOriginPrefix);
-	if (insertionIndex !== -1) {
-		content = content.substring(0, insertionIndex);
+	if (settings.usedApi.provideMetadata === true) {
+		const insertionIndex = content.indexOf(metadataOriginPrefix);
+		if (insertionIndex !== -1) {
+			content = content.substring(0, insertionIndex);
+		}
 	}
 	content = content.trim();
 	if (content === '') {
@@ -725,7 +727,10 @@ function formExtraDetails(collection) {
 	let information = settings.usedApi.provideMetadata === true ? `Текущая метка времени → ${getTimestamp()}.` : 'Дополнительная информация:';
 	const hintFraming = '[ПОДСКАЗКА]';
 	if (collection.length !== 0) {
-		const demand = '[ТРЕБОВАНИЕ] Ты **НЕ МОЖЕШЬ** отвечать от лица пользователя. Ты отвечаешь **ТОЛЬКО ЗА СЕБЯ**, со стороны языковой модели. Приписывать метаданные, такие как идентификатор сообщения и время создания, **НЕ НУЖНО** — за это ответственна система.';
+		let demand = '[ТРЕБОВАНИЕ] Ты **НЕ МОЖЕШЬ** отвечать от лица пользователя. Ты отвечаешь **ТОЛЬКО ЗА СЕБЯ**, со стороны языковой модели.';
+		if (settings.usedApi.provideMetadata === true) {
+			demand += ' Приписывать метаданные, такие как идентификатор сообщения и время создания, **НЕ НУЖНО** — за это ответственна система.';
+		}
 		const lastStructure = collection[collection.length - 1];
 		if (lastStructure.role === 'assistant') {
 			information += `\n${demand}\n${hintFraming} Сейчас сложилась такая ситуация, что ты самоинициативно обращаешься к пользователю.`;
