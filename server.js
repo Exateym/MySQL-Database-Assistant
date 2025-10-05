@@ -1480,7 +1480,8 @@ async function handleRequestForMySql(commandParameters) {
 	}
 
 	if (JSON.stringify(mysqlConnectionParameters) !== JSON.stringify(settings.mysqlServer)) {
-		mysqlConnectionParameters = { ...settings.mysqlServer }; // Создание копии объекта.
+		// Создание копии объекта со включенной функцией выполнения нескольких SQL-операторов в одном запросе, разделенных точкой с запятой.
+		mysqlConnectionParameters = { ...settings.mysqlServer, multipleStatements: true };
 		if (mysqlPool) {
 			await mysqlPool.end();
 		}
