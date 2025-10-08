@@ -42,6 +42,7 @@ let settings = {
 };
 
 const listOfCommands = [
+	'EditMessageContent',
 	'RequestForMySQL'
 ];
 
@@ -553,7 +554,7 @@ const textContentDesignation = 'Текстовое содержимое';
 function validateHistoryAndGetArray() {
 	const projectObject = projectPaths.history;
 	const relativePath = path.relative(__dirname, projectObject);
-	const collection = readArrayFromProjectFile(projectObject);
+	let collection = readArrayFromProjectFile(projectObject);
 	const reports = [];
 
 	for (let index = 0; index < collection.length; index++) {
@@ -596,6 +597,18 @@ function validateHistoryAndGetArray() {
 	} else if (reports.length > 1) {
 		console.error(`Следующие номера элементов массива файла «${relativePath}» не прошли проверку:\n${reports.join('\n')}.`);
 		finishProcess();
+	}
+
+	const withoutDuplicateIdentifiers = [];
+	for (let structure of collection) {
+		if (withoutDuplicateIdentifiers.find(message => message.identifier === structure.identifier) === undefined) {
+			withoutDuplicateIdentifiers.push(structure);
+		}
+	}
+	if (collection.length !== withoutDuplicateIdentifiers.length) {
+		collection = withoutDuplicateIdentifiers;
+		writeIntoFile(projectObject, JSON.stringify(collection, null, '\t'));
+		console.log(`Из массива файла «${relativePath}» исключены сообщения, идентификаторы которых повторились при чтении в прямом порядке.`);
 	}
 	return collection;
 }
@@ -665,6 +678,19 @@ function deleteFromHistory(identifier) {
 		return { successValue: true, feedbackValue: `${resultPrefix} Удалено из чата.` };
 	} else {
 		return { successValue: false, feedbackValue: `${resultPrefix} Не найдено в чате.` };
+	}
+}
+
+function editMessageContent(identifier, newText) {
+	const collection = validateHistoryAndGetArray();
+	const targetMessage = collection.find(structure => structure.identifier === identifier);
+	const resultPrefix = `Сообщение с идентификатором «${identifier}» →`;
+	if (targetMessage !== undefined) {
+		targetMessage.content = newText;
+		writeIntoFile(projectPaths.history, JSON.stringify(collection, null, '\t'));
+		return `${resultPrefix} Было отредактировано.`;
+	} else {
+		return `${resultPrefix} Не найдено в чате.`;
 	}
 }
 
@@ -1424,6 +1450,7 @@ function selectCommandSyntaxes(baseString) {
 				let pullResult;
 				let syntaxEndIndex;
 				switch (commandName) {
+					case 'EditMessageContent': pullResult = pullArguments(baseString, syntaxBeginIndex, commandName, 2); break;
 					case 'RequestForMySQL': pullResult = pullArguments(baseString, syntaxBeginIndex, commandName, 2); break;
 				}
 				if (!isNotArray(pullResult, 'Массив, содержащий в себе хотя бы одно строковое значение и число как последний элемент')) {
@@ -1451,6 +1478,7 @@ async function executeCommands(baseString) {
 	const collection = selectCommandSyntaxes(baseString);
 	for (let structure of collection) {
 		switch (structure.commandName) {
+			case 'EditMessageContent': feedbacks.push(handleEditMessageContent(structure.parameters)); break;
 			case 'RequestForMySQL': feedbacks.push(await handleRequestForMySql(structure.parameters)); break;
 		}
 	}
@@ -1465,6 +1493,26 @@ async function executeCommands(baseString) {
 
 
 // ===== Обработчики команд управления системой =====
+
+function handleEditMessageContent(commandParameters) {
+	const [identifier, newText] = commandParameters;
+	const lengthLimit = 100;
+	const displayValue = newText.replace(/\s+/g, ' ').trim();
+	const feedback = `Распознана команда EditMessageContent с параметрами «${identifier}» и «${displayValue.substring(0, lengthLimit)}${displayValue.length > lengthLimit ? '…' : ''}» →`;
+
+	let problem;
+	const numberValue = parseInt(identifier, 10);
+	problem = isNotNaturalNumber(numberValue, 'Идентификатор сообщения');
+	if (problem) {
+		return `${feedback} ${problem}`;
+	}
+	problem = isNotNotEmptyString(newText, textContentDesignation);
+	if (problem) {
+		return `${feedback} ${problem}`;
+	}
+
+	return editMessageContent(numberValue, newText);
+}
 
 async function handleRequestForMySql(commandParameters) {
 	const [contentOption, sqlQuery] = commandParameters;

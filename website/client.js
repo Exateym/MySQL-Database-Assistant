@@ -118,16 +118,36 @@ function displayChatHistory(chatMessages) {
 			const messageBlock = document.createElement('div');
 			messageBlock.classList.add('message-block');
 
-			const containerForDeleteButton = document.createElement('div');
-			containerForDeleteButton.classList.add('container-for-delete-button');
+			const containerForButtons = document.createElement('div');
+			containerForButtons.classList.add('container-for-buttons');
+
+			const editButton = document.createElement('button');
+			editButton.textContent = 'Редактировать';
+			editButton.classList.add('control-button');
+			editButton.classList.add('edit-option');
+			editButton.dataset.messageIdentifier = structure.identifier;
+			editButton.dataset.messageContent = structure.content;
+			editButton.addEventListener('click', async (event) => {
+				const firstArgument = event.target.dataset.messageIdentifier;
+				const secondArgument = event.target.dataset.messageContent;
+				const commandSyntax = `EditMessageContent($$$$$${firstArgument}$$$$$, $$$$$${secondArgument}$$$$$)`;
+				if (messageInput.value.trim() === '') {
+					messageInput.value = commandSyntax;
+				} else {
+					messageInput.value += '\n\n' + commandSyntax;
+				}
+			});
+			containerForButtons.appendChild(editButton);
+
 			const deleteButton = document.createElement('button');
 			deleteButton.textContent = 'Удалить';
-			deleteButton.classList.add('delete-button');
+			deleteButton.classList.add('control-button');
+			deleteButton.classList.add('delete-option');
 			deleteButton.dataset.messageIdentifier = structure.identifier;
 			deleteButton.addEventListener('click', async (event) => {
 				await fetchDelete(parseInt(event.target.dataset.messageIdentifier, 10));
 			});
-			containerForDeleteButton.appendChild(deleteButton);
+			containerForButtons.appendChild(deleteButton);
 
 			const containerForContent = document.createElement('div');
 			containerForContent.classList.add('container-for-content');
@@ -142,16 +162,18 @@ function displayChatHistory(chatMessages) {
 				messageBlock.classList.add('role-user');
 				roleName = 'Пользователь';
 			}
+
 			const metadataHeader = document.createElement('h4');
 			metadataHeader.classList.add('metadata-header');
 			metadataHeader.textContent = `${roleName} ${getTimestamp(structure.timestamp)} Идентификатор сообщения: «${structure.identifier}»`;
+
 			const contentParagraph = document.createElement('p');
 			contentParagraph.classList.add('content-paragraph');
 			contentParagraph.textContent = structure.content;
 			containerForContent.appendChild(metadataHeader);
 			containerForContent.appendChild(contentParagraph);
 
-			messageBlock.appendChild(containerForDeleteButton);
+			messageBlock.appendChild(containerForButtons);
 			messageBlock.appendChild(containerForContent);
 			chatHistory.appendChild(messageBlock);
 		});

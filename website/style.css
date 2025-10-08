@@ -17,8 +17,14 @@
 	--role-assistant-dark: #004040; /* Бирюзовый */
 	--role-user-dark: #000033; /* Синий */
 
-	/* Цвет кнопки удаления (шапки) */
-	--delete-button-header-bg: #8B8000; /* Тёмно-жёлтый */
+	/* Контейнер для размещения кнопок управления сообщением */
+	--buttons-header-bg: #8B8000; /* Тёмно-жёлтый */
+
+	/* Цвет кнопки редактирования */
+	--edit-button-bg: #8b00ff;
+	--edit-button-hover-bg: #9400d3;
+
+	/* Цвет кнопки удаления */
 	--delete-button-bg: #dc3545; /* Красный */
 	--delete-button-hover-bg: #c82333;
 }
@@ -196,17 +202,17 @@ button:active {
 }
 
 /* Контейнер для кнопки удаления (шапка сообщения) */
-.container-for-delete-button {
+.container-for-buttons {
 	width: 100%;
-	background-color: var(--delete-button-header-bg);
+	background-color: var(--buttons-header-bg);
 	padding: 5px 10px;
 	display: flex;
+	flex-direction: row;
 	justify-content: flex-end; /* Выравнивание кнопки удаления по правому краю */
 	align-items: center;
 }
 
-.delete-button {
-	background-color: var(--delete-button-bg);
+.control-button {
 	color: var(--text-light);
 	border: none;
 	padding: 3px 8px;
@@ -216,7 +222,19 @@ button:active {
 	transition: background-color 0.2s ease;
 }
 
-.delete-button:hover {
+.edit-option {
+	background-color: var(--edit-button-bg);
+}
+
+.edit-option:hover {
+	background-color: var(--edit-button-hover-bg);
+}
+
+.delete-option {
+	background-color: var(--delete-button-bg);
+}
+
+.delete-option:hover {
 	background-color: var(--delete-button-hover-bg);
 }
 
